@@ -1,7 +1,2 @@
 build:
   version: "1.0"
-
-spring:
-  data:
-    mongodb:
-      uri: ${DATABASE_URL}
