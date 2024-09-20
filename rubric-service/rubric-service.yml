@@ -1,0 +1,19 @@
+management:
+  endpoints:
+    web:
+      exposure: # exposes /actuator endpoints over HTTP
+        include: '*'
+  info:
+    env:
+      enabled: true # includes environment-specific info in /actuator/info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    shutdown:
+      enabled: true # /actuator/shutdown to shut down gracefully (TO BE SECURED)
+  health: # /actuator/health
+    readinessstate: # /actuator/health/readiness
+      enabled: true
+    livenessstate: # /actuator/health/liveness
+      enabled: true
