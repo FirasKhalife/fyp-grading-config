@@ -1,6 +1,32 @@
 build:
   version: "1.0"
 
+info:
+  app:
+    name: "notification"
+    description: "FYP Grading project - Notification Microservice"
+    version: "1.0"
+
+management:
+  endpoints:
+    web:
+      exposure: # exposes /actuator endpoints over HTTP
+        include: '*'
+  info:
+    env:
+      enabled: true # includes environment-specific info in /actuator/info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    shutdown:
+      enabled: true # /actuator/shutdown to shut down gracefully (TO BE SECURED)
+  health: # /actuator/health
+    readinessstate: # /actuator/health/readiness
+      enabled: true
+    livenessstate: # /actuator/health/liveness
+      enabled: true
+
 spring:
   rabbitmq:
     retry-queues-ttl: 2000
