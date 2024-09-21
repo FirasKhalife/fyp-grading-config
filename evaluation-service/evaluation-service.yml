@@ -22,15 +22,30 @@ resilience4j:
   circuitbreaker: # /actuator/circuitbreakers
     configs:
       default:
-        slidingWindowSize: 10
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 2
-        slidingWindowType: COUNT_BASED
-        slowCallDurationThreshold: 3s
-        slowCallRateThreshold: 50
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: COUNT_BASED
+        slow-call-duration-threshold: 3s
+        slow-call-rate-threshold: 50
   timelimiter:
     configs:
       default:
-        timeoutDuration: 5s
-        cancelRunningFuture: true
+        timeout-duration: 5s
+        cancel-running-future: true
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 100
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions: # retry only if one of the following exceptions is raised
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    configs:
+      default:
+        timeout-duration: 1000
+        limit-refresh-period: 5000
+        limit-for-period: 1
