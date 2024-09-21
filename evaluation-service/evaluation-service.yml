@@ -17,3 +17,13 @@ management:
       enabled: true
     livenessstate: # /actuator/health/liveness
       enabled: true
+
+resilience4j:
+  circuitbreaker: # /actuator/circuitbreakers
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 2
+        slidingWindowType: COUNT_BASED

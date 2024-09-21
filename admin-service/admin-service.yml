@@ -49,3 +49,13 @@ spring:
       queue: "dead-queue"
       exchange: "dead-exchange"
       routing-key: "dead-key"
+
+resilience4j:
+  circuitbreaker: # /actuator/circuitbreakers
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 2
+        slidingWindowType: COUNT_BASED

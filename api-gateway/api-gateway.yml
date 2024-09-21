@@ -11,7 +11,7 @@ management:
       probes:
         enabled: true
     gateway:
-      enabled: true
+      enabled: true # /actuator/gateway/routes
     shutdown:
       enabled: true # /actuator/shutdown to shut down gracefully (TO BE SECURED)
   health: # /actuator/health
@@ -19,3 +19,13 @@ management:
       enabled: true
     livenessstate: # /actuator/health/liveness
       enabled: true
+
+resilience4j:
+  circuitbreaker: # /actuator/circuitbreakers
+    configs:
+      default: # applied to all circuit breakers; to specify one, use its name
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 2
+        slidingWindowType: COUNT_BASED
