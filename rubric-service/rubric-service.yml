@@ -17,3 +17,34 @@ management:
       enabled: true
     livenessstate: # /actuator/health/liveness
       enabled: true
+
+resilience4j:
+  circuitbreaker: # /actuator/circuitbreakers
+    configs:
+      default: # applied to all circuit breakers; to specify one, use its name
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: COUNT_BASED
+        slow-call-duration-threshold: 3s
+        slow-call-rate-threshold: 50
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 5s
+        cancel-running-future: true
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 100
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions: # retry only if one of the following exceptions is raised
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    configs:
+      timeout-duration: 1000
+      limit-refresh-period: 1000
+      limit-for-period: 3
