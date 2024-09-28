@@ -65,6 +65,7 @@ resilience4j:
           - java.util.concurrent.TimeoutException
   ratelimiter:
     configs:
-      timeout-duration: 1000
-      limit-refresh-period: 1000
-      limit-for-period: 3
+      default:
+        timeout-duration: 1000
+        limit-refresh-period: 1000
+        limit-for-period: 3
