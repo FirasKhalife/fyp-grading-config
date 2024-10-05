@@ -1,0 +1,51 @@
+management:
+  endpoints:
+    web:
+      exposure: # exposes /actuator endpoints over HTTP
+        include: '*'
+  info:
+    env:
+      enabled: true # includes environment-specific info in /actuator/info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    shutdown:
+      enabled: true # /actuator/shutdown to shut down gracefully (TO BE SECURED)
+  health: # /actuator/health
+    readinessstate: # /actuator/health/readiness
+      enabled: true
+    livenessstate: # /actuator/health/liveness
+      enabled: true
+
+resilience4j:
+  circuitbreaker: # /actuator/circuitbreakers
+    configs:
+      default:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: COUNT_BASED
+        slow-call-duration-threshold: 3s
+        slow-call-rate-threshold: 50
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 5s
+        cancel-running-future: true
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 100
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions: # retry only if one of the following exceptions is raised
+          - java.util.concurrent.TimeoutException
+  ratelimiter:
+    configs:
+      default:
+        timeout-duration: 1000
+        limit-refresh-period: 1000
+        limit-for-period: 3
