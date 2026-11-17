@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate the shared configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - run: pip install --quiet pyyaml==6.0.3
+
+      # Values served from here override every service's own settings, so they must never widen what the services
+      # expose, and the repository is public, so it must hold no secrets.
+      - name: Parse every file and check the guard rails
+        shell: python
+        run: |
+          import pathlib, re, sys, yaml
+
+          problems = []
+          files = sorted(pathlib.Path(".").rglob("*.yml")) + sorted(pathlib.Path(".").rglob("*.yaml"))
+          files = [f for f in files if ".github" not in f.parts]
+          for path in files:
+              text = path.read_text(encoding="utf-8")
+              try:
+                  docs = [d for d in yaml.safe_load_all(text) if d]
+              except yaml.YAMLError as e:
+                  problems.append(f"{path}: not valid YAML: {e}")
+                  continue
+              code = "\n".join(line.split("#", 1)[0] for line in text.splitlines())  # comments don't count
+              flat = re.sub(r"\s+", " ", code)
+              if re.search(r"include:\s*['\"]?\*", flat):
+                  problems.append(f"{path}: exposes every actuator endpoint ('*')")
+              for word in ("shutdown", "heapdump"):
+                  if re.search(rf"\b{word}\b", code):
+                      problems.append(f"{path}: mentions the {word} endpoint")
+              if re.search(r"(?i)(password|secret|token)\s*:\s*['\"]?[^\s'\"$]", code):
+                  problems.append(f"{path}: looks like it holds a secret")
+          print(f"Checked {len(files)} file(s).")
+          for p in problems:
+              print("::error::" + p)
+          sys.exit(1 if problems else 0)

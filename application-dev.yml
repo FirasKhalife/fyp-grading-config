@@ -1,0 +1,4 @@
+# Local development: more detail from our own code, never request bodies.
+logging:
+  level:
+    com.fypgrading: DEBUG

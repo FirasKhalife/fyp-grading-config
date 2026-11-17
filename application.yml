@@ -1,0 +1,19 @@
+# Shared by every Assay service (the config server serves this file to all applications).
+# Each service's own application.yml is complete on its own; this file only holds settings that must be the same
+# everywhere. Values here override the services' defaults, so it must never widen what is exposed.
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus   # never '*': heapdump, env and shutdown stay closed
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.config: WARN
