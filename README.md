@@ -4,7 +4,8 @@ Shared configuration for the Assay services, served by
 [fyp-grading-config-server](https://github.com/FirasKhalife/fyp-grading-config-server).
 
 - `application.yml` applies to every service. It only holds what must be identical everywhere: which actuator
-  endpoints are exposed (health, info and prometheus) and log levels.
+  endpoints are exposed (health, info and prometheus), which tokens are accepted (issuer `AUTH_ISSUER_URI` and
+  client `assay-spa`) and log levels.
 - `application-dev.yml` applies with the `dev` profile.
 - Each service's own `application.yml` is complete, so a service also starts without the config server.
 
