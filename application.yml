@@ -13,6 +13,22 @@ management:
         enabled: true
       show-details: never
 
+# Which tokens the services accept (review: issuer and audience). The keys are still fetched from the internal
+# Keycloak address (each service's jwk-set-uri, AUTH_SERVER_URL); setting both means no discovery call goes out.
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # The issuer in the tokens: Keycloak's public URL (KC_HOSTNAME) + /realms/assay. Compose sets it from
+          # PUBLIC_URL; the default is the dev compose's Keycloak.
+          issuer-uri: ${AUTH_ISSUER_URI:http://localhost:7080/realms/assay}
+
+assay:
+  security:
+    # The clients whose tokens are accepted (the azp claim): only the single-page app.
+    authorized-parties: assay-spa
+
 logging:
   level:
     root: INFO
